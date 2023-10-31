@@ -2,7 +2,7 @@
 #include "scheduler.h"
 #include "registers.h"
 
-extern void load_prog(char*, int);
+
 extern int clock_cycle();
 extern void mem_print();
 extern void mem_init();
