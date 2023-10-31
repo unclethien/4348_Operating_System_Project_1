@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
 
     // Load programs
-    load_programs("programs.txt"); 
+    load_programs("programs_list.txt"); 
     
     int cycles = 0;
     int status;
