@@ -107,3 +107,31 @@ int clock_cycle()
     }
     return 1;
 }
+
+// Struct to hold register values
+typedef struct 
+{
+  int registers[7]; 
+} register_struct;
+
+// New context switch function
+register_struct context_switch(register_struct new_vals) 
+{
+
+  register_struct old_vals;
+  
+  // Save old register values
+  for(int i=0; i<7; i++) 
+  {
+    old_vals.registers[i] = registers[i];
+  }
+
+  // Load new register values
+  for(int i=0; i<7; i++) 
+  {
+    registers[i] = new_vals.registers[i];
+  }
+
+  return old_vals;
+
+}

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "scheduler.h"
 #include "registers.h"
 
 //Memory function
@@ -121,6 +122,44 @@ int* translate(char *line)
         printf("Error: Invalid instruction: %s\n", line);
         return NULL;
     }
+
+}
+
+void load_program(char[] fname)
+{
+    FILE* fp = fopen(fname, "r");
+    if (fp == NULL) {
+        printf("Error opening file %s\n", fname);
+        return;
+    }
+
+    char line[128];
+    while (fgets(line, 128, fp) != NULL) {
+
+        trim_newline(line);
+        
+        int addr;
+        char prog[64];
+        sscanf(line, "%d %s", &addr, prog);
+        
+        load_prog(prog, addr);
+        
+        // Create PCB
+        PCB pcb;
+        pcb.pid = next_pid++;
+        pcb.size = 10; // hardcoded size
+        pcb.base = addr;
+        pcb.regs = init_regs();
+        
+        // Add to process table
+        process_table[pcb.pid] = pcb;
+
+        // Add to ready queue   
+        add_to_ready_queue(pcb);
+
+    }
+
+    fclose(fp);
 
 }
 
