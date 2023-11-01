@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include "scheduler.h" 
 
 // Global variables
 int time_quantum = 10;
@@ -11,7 +10,7 @@ typedef struct PCB
     int pid;
     int size;
     int base;
-    registers regs; 
+    register_struct regs; 
 } PCB;
 
 // Process table array
