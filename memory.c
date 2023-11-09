@@ -55,7 +55,6 @@ void mem_print()
     {
         printf("Addr: %d, Data: %d %d\n", i, memory[i][0], memory[i][1]); 
     }
-
 }
 
 void mem_init()
