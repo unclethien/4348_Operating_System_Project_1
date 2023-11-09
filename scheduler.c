@@ -10,7 +10,7 @@ typedef struct PCB
     int pid;
     int size;
     int base;
-    register_struct regs; 
+    register regs; 
 } PCB;
 
 // Process table array
