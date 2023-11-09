@@ -1,14 +1,29 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "registers.h"
 
 //Memory function
-
 extern void mem_write(int, int*);
 
-//Load the program with the name fname, translate it into integer OP Codes, and then store it in memory at address addr
+//Process Control Block
+typedef struct PCB {
+    int pid;
+    int pc;
+    int* base;
+    int* limit;
+} PCB;
 
+//Process Table
+PCB process_table[10];
+int process_count = 0;
+
+//Ready Queue
+int ready_queue[10];
+int queue_count = 0;
+
+//Load the program with the name fname, translate it into integer OP Codes, and then store it in memory at address addr
 int* translate(char*);
 
 void trim_newline(char* line)
@@ -20,7 +35,7 @@ void trim_newline(char* line)
     }
 }
 
-void load_prog(char *fname, int addr)
+void load_programs(char fname[])
 {
     FILE *fp = fopen(fname, "r");
     if(fp == NULL)
@@ -40,44 +55,33 @@ void load_prog(char *fname, int addr)
             continue;
         }
         
-        int* instruct = translate(line);
+        int addr;
+        char prog_name[128];
+        sscanf(line, "%d %s", &addr, prog_name);
+
+        int* instruct = translate(prog_name);
 
         if (instruct != NULL)
         {
             mem_write(addr, instruct);
-            addr++;
+
+            //Create a PCB for the program and add it to the process table
+            PCB new_process;
+            new_process.pid = process_count;
+            new_process.pc = addr;
+            new_process.base = instruct;
+            new_process.limit = instruct + sizeof(instruct)/sizeof(int);
+            process_table[process_count] = new_process;
+            process_count++;
+
+            //Add the process to the ready queue of the scheduler
+            ready_queue[queue_count] = new_process.pid;
+            queue_count++;
         }
     }
     fclose(fp);
 }
 
-void load_program(int mem_loc, char* prog_file); 
-PCB* create_pcb(int mem_loc);
-void add_to_ready_queue(PCB* pcb);
-
-void load_programs(char* fname) {
-
-  FILE* fp = fopen(fname, "r");
-  if (fp == NULL) {
-    printf("Error opening file %s\n", fname);
-    return;
-  }
-
-  char line[100];
-  while (fgets(line, 100, fp)) {
-
-    int mem_loc;
-    char prog_file[50];
-    sscanf(line, "%d %s", &mem_loc, prog_file);
-    
-    load_program(mem_loc, prog_file);
-    
-    PCB* pcb = create_pcb(mem_loc);
-    add_to_ready_queue(pcb);
-  }
-
-  fclose(fp);
-}
 //Translate the instruction into an integer OP Code
 int* translate(char *line)
 {
@@ -150,4 +154,5 @@ int* translate(char *line)
     }
 
 }
+
 
