@@ -8,6 +8,38 @@ extern void mem_write(int, int*);
 
 int data[2];
 
+typedef struct {
+    int AC;
+    int IR0;
+    int IR1;
+    int MBR;
+    int MAR;
+    int PC;
+    int Base;
+} register_struct;
+
+register_struct context_switch(register_struct new_vals) {
+    register_struct old_vals = {
+        .AC = registers[AC],
+        .IR0 = registers[IR0],
+        .IR1 = registers[IR1],
+        .MBR = registers[MBR],
+        .MAR = registers[MAR],
+        .PC = registers[PC],
+        .Base = registers[Base]
+    };
+
+    registers[AC] = new_vals.AC;
+    registers[IR0] = new_vals.IR0;
+    registers[IR1] = new_vals.IR1;
+    registers[MBR] = new_vals.MBR;
+    registers[MAR] = new_vals.MAR;
+    registers[PC] = new_vals.PC;
+    registers[Base] = new_vals.Base;
+
+    return old_vals;
+}
+
 void fetch_instruction(int addr)
 {
     int* instruct = mem_read(addr);
@@ -97,6 +129,7 @@ int mem_address(int l_addr)
 int clock_cycle()
 {
     fetch_instruction(mem_address(registers[PC]));
+}
     
 
     execute_instruction();
