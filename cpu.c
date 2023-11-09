@@ -129,7 +129,7 @@ int mem_address(int l_addr)
 int clock_cycle()
 {
     fetch_instruction(mem_address(registers[PC]));
-}
+
     
 
     execute_instruction();
