@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include "registers.h"
-#include "scheduler.h"
+
 
 extern void load_prog(char*, int);
 extern int clock_cycle();
