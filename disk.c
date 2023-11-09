@@ -51,6 +51,33 @@ void load_prog(char *fname, int addr)
     fclose(fp);
 }
 
+void load_program(int mem_loc, char* prog_file); 
+PCB* create_pcb(int mem_loc);
+void add_to_ready_queue(PCB* pcb);
+
+void load_programs(char* fname) {
+
+  FILE* fp = fopen(fname, "r");
+  if (fp == NULL) {
+    printf("Error opening file %s\n", fname);
+    return;
+  }
+
+  char line[100];
+  while (fgets(line, 100, fp)) {
+
+    int mem_loc;
+    char prog_file[50];
+    sscanf(line, "%d %s", &mem_loc, prog_file);
+    
+    load_program(mem_loc, prog_file);
+    
+    PCB* pcb = create_pcb(mem_loc);
+    add_to_ready_queue(pcb);
+  }
+
+  fclose(fp);
+}
 //Translate the instruction into an integer OP Code
 int* translate(char *line)
 {
